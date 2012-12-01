@@ -161,7 +161,7 @@ static int put_crypt_ftr_and_key(char *real_blk_name, struct crypt_mnt_ftr *cryp
     }
 
     if ( (nr_sec = get_blkdev_size(fd)) == 0) {
-      SLOGE("Cannot get size of block device %s\n", fname);
+      SLOGE("1-Cannot get size of block device %s\n", fname);
       goto errout;
     }
 
@@ -260,7 +260,7 @@ static int get_crypt_ftr_and_key(char *real_blk_name, struct crypt_mnt_ftr *cryp
     }
 
     if ( (nr_sec = get_blkdev_size(fd)) == 0) {
-      SLOGE("Cannot get size of block device %s\n", fname);
+      SLOGE("2-Cannot get size of block device %s\n", fname);
       goto errout;
     }
 
@@ -1154,7 +1154,7 @@ int cryptfs_enable(char *howarg, char *passwd)
     /* Get the size of the real block device */
     fd = open(real_blkdev, O_RDONLY);
     if ( (nr_sec = get_blkdev_size(fd)) == 0) {
-        SLOGE("Cannot get size of block device %s\n", real_blkdev);
+        SLOGE("3-Cannot get size of block device %s\n", real_blkdev);
         goto error_unencrypted;
     }
     close(fd);
@@ -1167,7 +1167,7 @@ int cryptfs_enable(char *howarg, char *passwd)
         max_fs_size_sec = nr_sec - (CRYPT_FOOTER_OFFSET / 512);
 
         if (fs_size_sec > max_fs_size_sec) {
-            SLOGE("Orig filesystem overlaps crypto footer region.  Cannot encrypt in place.");
+            SLOGE("Orig filesystem overlaps crypto footer region : %u / %u / %u ;  Cannot encrypt in place.", nr_sec, fs_size_sec, max_fs_size_sec);
             goto error_unencrypted;
         }
     }
@@ -1193,7 +1193,7 @@ int cryptfs_enable(char *howarg, char *passwd)
         if (should_encrypt(&vol_list[i])) {
             fd = open(vol_list[i].blk_dev, O_RDONLY);
             if ( (vol_list[i].size = get_blkdev_size(fd)) == 0) {
-                SLOGE("Cannot get size of block device %s\n", vol_list[i].blk_dev);
+                SLOGE("4-Cannot get size of block device %s\n", vol_list[i].blk_dev);
                 goto error_unencrypted;
             }
             close(fd);
